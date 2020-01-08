@@ -18,14 +18,6 @@ function fetchDogs() {
         .then(json => displayImages(json));
 }
 
-function fetchBreeds() {
-    const breedUrl = 'https://dog.ceo/api/breeds/list/all'
-
-    return fetch(breedUrl)
-        .then(resp => resp.json())
-        .then(json => renderUlTag(json));
-}
-
 function renderUlTag(json) {
     const mainUl = document.querySelector('#dog-breeds');
 
@@ -35,7 +27,7 @@ function renderUlTag(json) {
         
         const li = document.createElement('li');
         li.innerHTML = breed;
-        mainUl.appendChild(li)
+        mainUl.appendChild(li);
         
         const subBreeds = breeds[breed];
         const subul = document.createElement('ul');
@@ -55,21 +47,12 @@ function renderUlTag(json) {
             mainUl.appendChild(li);
         }
     }
-    console.log("Breeds: ", json);
-    
 }
-// function renderUlTag(json) {
-//     const ul = document.querySelector('#dog-breeds');
 
+function fetchBreeds() {
+    const breedUrl = 'https://dog.ceo/api/breeds/list/all';
 
-
-//     // json.message.for (breedname => {
-//     //     const li = document.createElement('li');
-        
-//     //     console.log(breedname);
-//     //     // if ( ) {
-//         //     li.innerHTML = ``;
-//         // }
-//         // ul.appendChild(p);
-//     });
-// }
+    return fetch(breedUrl)
+        .then(resp => resp.json())
+        .then(json => renderUlTag(json));
+}
