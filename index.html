@@ -3,6 +3,18 @@
   <head>
     <meta charset="utf-8">
     <title>Intro to AJAX Practice Tasks</title>
+    <style>
+      img {
+        height: 100px;
+        width: 100px;
+        float: left;
+        margin: 1%;
+      }
+
+      #dog-image-container {
+        height: 150px;
+      }
+    </style>
     <script src="src/index.js" charset="utf-8"></script>
   </head>
   <body>
@@ -11,8 +23,9 @@
     <div id="dog-image-container">
       <!-- images here -->
     </div>
-
+    
     <hr>
+    <div>
     <label for="select-breed">Filter Breeds That Start with:</label>
     <select id="breed-dropdown" name="select-breed">
       <option value="a">a</option>
@@ -20,6 +33,7 @@
       <option value="c">c</option>
       <option value="d">d</option>
     </select>
+  </div>
 
     <ul id="dog-breeds">
 
