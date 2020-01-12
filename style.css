@@ -1,0 +1,55 @@
+img {
+  height: 200px;
+  width: 250px;
+  float: left;
+  margin: 1%;
+  border-radius: 10%;
+}
+
+#dog-image-container {
+  height: 220px;
+}
+
+ul ul {
+  cursor: default;
+  margin-left: -2%;
+}
+
+li {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+li span {
+  display: 100%;
+}
+
+li:hover, li span:hover {
+  background: rgba(153, 102, 51, .5);
+}
+
+li ul li:hover {
+  background: rgba(102, 153, 0, .1);
+}
+
+#title, #bottom-container {
+  margin-left: 5%;
+  width: 40%;
+}
+
+.upper {
+  text-transform: uppercase;
+}
+
+#dog-breeds {
+  background: rgba(240,240,240, .5);
+}
+
+.goldenrod {
+  color: #B8860B;
+}
+
+.darkred {
+  color: #8B0000;
+}
+
