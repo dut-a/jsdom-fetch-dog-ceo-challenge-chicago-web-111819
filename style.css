@@ -7,7 +7,11 @@ img {
 }
 
 #dog-image-container {
-  height: 220px;
+  height: 250px;
+}
+
+#dog-image-container, h1 {
+  margin-left: 4%;
 }
 
 ul ul {
@@ -51,5 +55,12 @@ li ul li:hover {
 
 .darkred {
   color: #8B0000;
+}
+
+#the-ceo {
+  float: right;
+  width: 100px;
+  height: 100px;
+  display: none; /* temp */
 }
 

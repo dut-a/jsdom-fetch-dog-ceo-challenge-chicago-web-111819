@@ -1,65 +1,72 @@
 
-let filterDetected = false;
+let breeds = [];
 
-document.addEventListener("DOMContentLoaded", () => {
-  fetchDogs();
-  fetchBreeds();
-  // filterBreeds();
-})
+document.addEventListener("DOMContentLoaded", function () {
+  renderImages();
+  loadBreeds();
+  // addTheCeo();
+});
 
-/** Challenge 1 */
-function displayImages(json){
-  const div = document.querySelector('#dog-image-container');
-  json.message.forEach(function(image){
-    const p = document.createElement('p');
-    p.innerHTML = `<img src=${image} />`;
-    div.appendChild(p);
-  });
+function renderImages() {
+  const imgUrl = "https://dog.ceo/api/breeds/image/random/4"
+  fetch(imgUrl)
+    .then(res=> res.json())
+    .then(results => {
+      results.message.forEach(img => renderOneImage(img))
+    });
 }
 
-function fetchDogs() {
-  return fetch("https://dog.ceo/api/breeds/image/random/4")
-    .then(resp => resp.json())
-    .then(json => displayImages(json));
+function renderOneImage(dogImg) {
+  let imgContainer = document.querySelector("#dog-image-container");
+  let img = document.createElement("img");
+  img.src = dogImg;
+  imgContainer.appendChild(img);
 }
-/** END: Challenge 1: Fetch and display 'dog images'. */
 
-/** Challenge 2: Fetch and display 'dog breeds' */
-function renderBreeds(json) {
-  console.log("renderBreeds() called...")
-  const mainUl = document.querySelector('#dog-breeds');
-  
-  const breeds = json.message;
-  console.log(breeds);
-    for (const breed in breeds) {
-      if (breeds[breed].length > 0) {
-        const li = document.createElement('li');
-        const span = document.createElement('span');
-        span.innerHTML = breed;
-        /** TODO: Make 'span' clickable along the full length of 'parent space'. */
-        addColorToggle(span); // Challenge 3
-        li.appendChild(span);
-        mainUl.appendChild(li);
+function loadBreeds() {
+  const breedUrl = "https://dog.ceo/api/breeds/list/all"
+  fetch(breedUrl)
+    .then(res => res.json())
+    .then(data => {
+      breeds = data.message;
+      updateBreeds(breeds);
+      listenForBreedSelection();
+    });
+}
 
-        const subBreeds = breeds[breed];
-        const subul = document.createElement('ul');
+function updateBreeds(breeds) {
+  let mainUl = document.querySelector("#dog-breeds");
+  removeChildElementsFor(mainUl);
 
-        li.appendChild(subul);
+  for (const breed in breeds) {
+    if (breeds[breed].length > 0) {
+      const li = document.createElement("li");
+      const span = document.createElement("span");
+      span.innerHTML = breed;
+      /** TODO: Make 'span' clickable along the full length of 'parent space'. */
+      addColorToggle(span); // Challenge 3
+      li.appendChild(span);
+      mainUl.appendChild(li);
 
-        for (const subBreed in subBreeds) {
-          const subLi = document.createElement('li');
-          subLi.innerHTML = subBreeds[subBreed];
-          // add color change behavior to 'baby', LOL.
-          addColorToggle(subLi, "goldenrod"); // Challenge 3
-          // TODO: when 'baby' is clicked, activate parent too :)
-          // addColorToggle(li);
-          subul.appendChild(prepareBreed(subBreeds[subBreed], true, false));
-        }
+      const subBreeds = breeds[breed];
+      const subul = document.createElement("ul");
 
-      } else {
-        mainUl.appendChild(prepareBreed(breed, false, false));
+      li.appendChild(subul);
+
+      for (const subBreed in subBreeds) {
+        const subLi = document.createElement("li");
+        subLi.innerHTML = subBreeds[subBreed];
+        // add color change behavior to 'baby', LOL.
+        addColorToggle(subLi, "goldenrod"); // Challenge 3
+        // TODO: when 'baby' is clicked, activate parent too :)
+        // addColorToggle(li);
+        subul.appendChild(prepareBreed(subBreeds[subBreed], true, false));
       }
+
+    } else {
+      mainUl.appendChild(prepareBreed(breed, false, false));
     }
+  }
 }
 
 function prepareBreed(breed, childBreed = false, hasSubBreeds = false) {
@@ -68,7 +75,6 @@ function prepareBreed(breed, childBreed = false, hasSubBreeds = false) {
   childBreed ? addColorToggle(breedLi, "goldenrod") : addColorToggle(breedLi); // Challenge 3
 
   if (hasSubBreeds) {
-    // const li = document.createElement('li');
     const span = document.createElement('span');
     span.innerHTML = breed;
     /** TODO: Make 'span' clickable along the full length of 'parent space'. */
@@ -76,37 +82,12 @@ function prepareBreed(breed, childBreed = false, hasSubBreeds = false) {
     breedLi.appendChild(span);
     breedLi.parentElement.appendChild(breedLi);
 
-    // const subBreeds = breeds[breed];
     const subul = document.createElement('ul');
     breedLi.appendChild(subul);
   }
   
   return breedLi
 }
-
-function fetchBreeds() {
-  const breedUrl = 'https://dog.ceo/api/breeds/list/all';
-
-  return fetch(breedUrl)
-    .then(resp => resp.json())
-    .then(breeds => {
-      if (!filterDetected) {
-        // fetchBreeds();
-        console.log("rendering ALL breeds...");
-        renderBreeds(breeds);
-      } else {
-        console.log("rendering FILTERED breeds...");
-        renderBreeds(filterBreeds(breeds));
-      }
-      // renderBreeds(breeds);
-      // renderBreeds(filterBreeds(breeds));
-      // console.log(filterBreeds(breeds));
-      filterBreeds(breeds);
-      // return breeds;
-    });
-}
-
-/** END: Challenge 2 */
 
 /** Challenge 3 */
 function addColorToggle(element, colorClass = "darkred") {
@@ -116,6 +97,13 @@ function addColorToggle(element, colorClass = "darkred") {
   });
 }
 /** END: Challenge 3 */
+
+function removeChildElementsFor(parentElement) {
+  let childElement;
+  while (childElement = parentElement.lastElementChild) {
+    parentElement.removeChild(childElement);
+  }
+}
 
 /**
  * Challenge 4:
@@ -139,44 +127,45 @@ function addExtraOptions(existingOptions) {
   let allTxt = "all";
   allOption.text = allTxt;
   allOption.value = allTxt;
-  allOption.disabled = true; // temporarily disable
+  // allOption.disabled = true; // temporarily disable
   // insert after newly added 'instruction' option
   existingOptions.insertBefore(allOption, instruction.nextSibling);
 }
 
-function filterBreeds(breeds) {
-  console.log("filterBreeds() triggered...");
-  // prep
-  filterDetected = true;
-  let filterOptions = document.querySelector('#breed-dropdown');
-  addExtraOptions(filterOptions);
-
-  // desired behavior
-  filterOptions.addEventListener("change", (e) => {
-    renderBreeds(breedsSubset(breeds, e.target.value));
+function filterBreedsBy(letter) {
+  let allowedBreedKeys = Object.keys(breeds).filter((breedKey) => {
+    return breedKey.startsWith(letter);
   });
-
-  function breedsSubset(breeds, filterCriterion) {
-    let allBreeds = breeds.message;
-    let breedsToDisplay = allBreeds;
-    let allowedKeys = Object.keys(allBreeds).filter((breedKey) => {
-        return breedKey.startsWith(filterCriterion)
-    });
-    let filteredDogBreeds = Object.fromEntries(
-      Object.entries(allBreeds).filter(
-        ([key, val]) => allowedKeys.includes(key)
-      )
-   );
-
-    // console.log("all breeds: ", b);
-    // console.log("filtered breeds: ", filteredDogBreeds);
-    // location.reload(true);
-    if (filterDetected) { breedsToDisplay = filteredDogBreeds };
-    // renderBreeds(breeds);
-    console.log("Breeds: ", breedsToDisplay);
-    console.log("filter detected: ", filterDetected);
-    return breedsToDisplay;
-  }
-
+  let filteredBreeds = Object.fromEntries(
+    Object.entries(breeds).filter(
+      ([breedKey, breedValue]) => allowedBreedKeys.includes(breedKey)
+    )
+  );
+  
+  let breedsToDisplay = isEmpty(filteredBreeds) ? breeds : filteredBreeds;
+  updateBreeds(breedsToDisplay);
 }
-/** END: Challenge 4 */
+
+function listenForBreedSelection() {
+  let breedFilterDropdown = document.querySelector("#breed-dropdown");
+  addExtraOptions(breedFilterDropdown);
+  breedFilterDropdown.addEventListener("change", evt => {
+    filterBreedsBy(evt.target.value);
+  });
+}
+
+function isEmpty(obj) {
+  for(let prop in obj) {
+    if(obj.hasOwnProperty(prop)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function addTheCeo() {
+  let pageTitle = document.getElementById("title");
+  pageTitle.insertAdjacentHTML("afterend", '<div id="the-ceo"><img src="dog-the-ceo.jpg"></div>');
+}
+
+
